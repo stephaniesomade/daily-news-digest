@@ -4,7 +4,6 @@ import smtplib  # For sending emails
 from email.mime.text import MIMEText  # Email formatting
 from email.mime.multipart import MIMEMultipart  # Handling multi-part email messages
 
-
 # Step 1: Fetch news from multiple RSS feeds
 UK_RSS_FEEDS = [
     "http://feeds.bbci.co.uk/news/uk/rss.xml",
@@ -15,15 +14,18 @@ UK_RSS_FEEDS = [
 
 US_RSS_FEEDS = [
     "http://rss.cnn.com/rss/cnn_us.rss",
-    "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
 ]
 
+TECH_RSS_FEEDS = [
+    "https://techcrunch.com/feed/",
+    "https://www.theverge.com/rss/index.xml"
+]
 def fetch_news_from_feeds(feed_urls):
     """Fetches news articles from multiple RSS feeds."""
     articles = []
     for url in feed_urls:
         feed = feedparser.parse(url)
-        for entry in feed.entries[:5]:  # Get the top 5 news articles
+        for entry in feed.entries[:3]:  # Get the top 3 news articles
             articles.append({"title": entry.title, "link": entry.link, "summary": entry.summary})
     return articles
 
@@ -62,7 +64,7 @@ def send_email(news_list):
         server.sendmail(sender_email, receiver_email, msg.as_string())  # Send the email
 
 # Running the pipeline
-all_news_feeds = UK_RSS_FEEDS + US_RSS_FEEDS  # Combine UK and US feeds
+all_news_feeds = UK_RSS_FEEDS + US_RSS_FEEDS + TECH_RSS_FEEDS  # Combine UK and US feeds
 news_articles = fetch_news_from_feeds(all_news_feeds)  # Fetch news articles
 
 # Summarize each article
